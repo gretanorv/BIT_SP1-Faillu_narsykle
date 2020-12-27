@@ -8,6 +8,8 @@
 </head>
 <body>
 
+    <h1 class="title">File explorer</h1>
+
     <?php
 
         //on load initiate
@@ -32,10 +34,11 @@
 
             //return button
             //TODO :: kazkas negerai
-            if (isset($_GET['dir'])) {
+            if (isset($_GET['dir']) and $_GET['dir'] != '..') {
                 $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI'])."\n";;
                 print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
-            }
+            } 
+
             print('<div class="table">');
 
             //table
