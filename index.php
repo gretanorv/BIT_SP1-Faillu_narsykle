@@ -36,11 +36,13 @@
     {
         print('<div class="container">');
 
+
         //BACK button
         if (isset($_GET['dir']) and $_GET['dir'] != '..') {
             $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
             print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
         }
+
 
         //CREATE NEW button
         print('
@@ -58,6 +60,14 @@
             }
         } elseif ($_POST['newFolder'] === '') {
             print('Folder name is empty');
+        }
+
+
+        //DELETE button
+        if ($_GET['action'] && $_GET['action'] == 'delete') {
+            unlink($_GET['filename']);
+            header("Location:index.php");
+            exit();
         }
 
         print('<div class="table">');
@@ -82,7 +92,9 @@
                 print("<div class='table__row-left'>File</div>");
                 print("<div class='table__row-right'>
                     {$dir[$i]}
-                    <button class='table__row-right-btn'>DELETE</button>
+                    <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
+                        DELETE
+                    |</a>
                     </div>");
                 print('</div>');
             }
