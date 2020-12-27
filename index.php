@@ -94,7 +94,7 @@
                     {$dir[$i]}
                     <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
                         DELETE
-                    |</a>
+                    </a>
                     </div>");
                 print('</div>');
             }

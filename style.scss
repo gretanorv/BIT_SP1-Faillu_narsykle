@@ -14,7 +14,7 @@ body {
 .container {
   background-color: #303030;
   border-radius: 3px;
-  width: 50%;
+  width: 40%;
   position: absolute;
   top: 20vh;
   left: 50%;
@@ -92,15 +92,18 @@ body {
 
       &-btn {
         position: absolute;
+        color: #ccc;
         cursor: pointer;
         right: 0;
         top: 0;
         bottom: 0;
         padding: 0 20px;
+        padding-top: 11px;
         background-color: transparent;
         border: none;
         border-left: 1px solid black;
         transition: background-color 0.3s ease;
+        text-decoration: none;
 
         &:hover {
           background-color: #c57e7e;
