@@ -43,7 +43,22 @@
         }
 
         //CREATE NEW button
-        print('<button class="table__nav table__nav--create-new">Create new</button>');
+        print('
+            <form action="" method="post" class="form">
+                <input type="text" name="newFolder" id="newFolder" class="form__input" placeholder="Folder name">
+                <input type="submit" value="Create" class="form__button">
+            </form>
+        ');
+        if (isset($_POST['newFolder']) and $_POST['newFolder'] != '') {
+            if (!file_exists($path . '/' . $_POST['newFolder'])) {
+                mkdir($path . '/' . $_POST['newFolder']);
+                array_push($dir, $_POST['newFolder']);
+            } else {
+                print('Folder name exists');
+            }
+        } elseif ($_POST['newFolder'] === '') {
+            print('Folder name is empty');
+        }
 
         print('<div class="table">');
 
