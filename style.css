@@ -41,6 +41,17 @@ body {
   text-decoration: none;
 }
 
+.table__nav--create-new {
+  right: 20px;
+  position: absolute;
+  background-color: #9dadffc0;
+  border: none;
+  border-radius: 3px;
+  color: #2b2b2b;
+  cursor: pointer;
+  padding: 3px 10px;
+}
+
 .table__row {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -70,6 +81,25 @@ body {
           flex: 5;
   background-color: #727272;
   border-bottom: 1px solid black;
+  position: relative;
+}
+
+.table__row-right-btn {
+  position: absolute;
+  cursor: pointer;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0 20px;
+  background-color: transparent;
+  border: none;
+  border-left: 1px solid black;
+  -webkit-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+}
+
+.table__row-right-btn:hover {
+  background-color: #c57e7e;
 }
 
 .table__row-link {
