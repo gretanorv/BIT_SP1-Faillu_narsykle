@@ -80,6 +80,15 @@ body {
           flex: 5;
   background-color: #727272;
   border-bottom: 1px solid black;
+  position: relative;
+}
+
+.table__row-right-btn {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .table__row-link {
