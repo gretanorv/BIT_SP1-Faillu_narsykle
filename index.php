@@ -32,12 +32,14 @@
         function createTable($dir, $path) {
             print('<div class="container">');
 
-            //return button
-            //TODO :: kazkas negerai
+            //BACK button
             if (isset($_GET['dir']) and $_GET['dir'] != '..') {
                 $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI'])."\n";;
                 print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
-            } 
+            }
+
+            //CREATE NEW button
+            print('<button class="table__nav table__nav--create-new">Create new</button>');
 
             print('<div class="table">');
 
