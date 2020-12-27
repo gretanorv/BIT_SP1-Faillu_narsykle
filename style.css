@@ -49,6 +49,7 @@ body {
   border-radius: 3px;
   color: #2b2b2b;
   cursor: pointer;
+  padding: 3px 10px;
 }
 
 .table__row {
@@ -84,11 +85,21 @@ body {
 }
 
 .table__row-right-btn {
-  cursor: pointer;
   position: absolute;
+  cursor: pointer;
   right: 0;
   top: 0;
   bottom: 0;
+  padding: 0 20px;
+  background-color: transparent;
+  border: none;
+  border-left: 1px solid black;
+  -webkit-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+}
+
+.table__row-right-btn:hover {
+  background-color: #c57e7e;
 }
 
 .table__row-link {

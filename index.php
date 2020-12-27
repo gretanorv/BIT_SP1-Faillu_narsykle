@@ -69,7 +69,6 @@
                     {$dir[$i]}
                     <button class='table__row-right-btn'>DELETE</button>
                     </div>");
-                // print('<button class="table__row-right-btn">DELETE</button>');
                 print('</div>');
             }
         }
@@ -79,7 +78,7 @@
 
     ?>
 
-    <script src="index.js"></script>
+    <script> </script>
 </body>
 
 </html>
