@@ -1,0 +1,11 @@
+.title {
+  color: white;
+  display: flex;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 13px;
+
+  &--login {
+    margin-top: 20vh;
+  }
+}
