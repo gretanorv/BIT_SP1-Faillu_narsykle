@@ -69,37 +69,22 @@ session_start();
 
         $i = 2;
         for ($i; $i < count($dir); $i++) {
+            print('<div class="table__row">');
             if (is_dir("{$path}/{$dir[$i]}")) {
-                $folder = true;
-                $href_dir = "index.php?dir={$path}/{$dir[$i]}";
-                $type = 'Directory';
-                $file_name = $dir[$i];
+                print('<div class="table__row-left">Directory</div>');
+                print("<div class='table__row-right'>
+                            <a class='table__row-link' href='index.php?dir={$path}/{$dir[$i]}'>
+                                {$dir[$i]}
+                            </a></div>");
             } elseif (is_file("{$path}/{$dir[$i]}")) {
-                $folder = false;
-                //TODO:: if ending .php then no delete action
-                $del_btn = true;
-                $href_dir = "index.php?action=delete&filename={$path}/{$dir[$i]}";
-                $type = 'File';
-                $file_name = $dir[$i];
+                //TODO:: if ending .php no DELETE button
+                print("<div class='table__row-left'>File</div>");
+                print("<div class='table__row-right'>{$dir[$i]}
+                        <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
+                            DELETE
+                        </a></div>");
             }
-    ?>
-            <div class="table__row">
-                <div class="table__row-left"><?php echo $type ?></div>
-                <div class='table__row-right'>
-                    <?php
-                    if ($folder) {
-                        print("<a class='table__row-link' href='{$href_dir}'>{$file_name}
-                        </a>");
-                    } else {
-                        print("{$file_name}");
-                        if ($del_btn) {
-                            print("<a href='{$href_dir}' class='table__row-right-btn'>DELETE</a>");
-                        }
-                    }
-                    ?>
-                </div>
-            </div>
-    <?php
+            print('</div>');
         }
     }
     ?>
