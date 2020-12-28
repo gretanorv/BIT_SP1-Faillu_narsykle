@@ -1,5 +1,13 @@
 <?php
 session_start();
+
+//logout
+if (isset($_GET['action']) and $_GET['action'] === 'logout') {
+    unset($_SESSION['logged_in']);
+    unset($_SESSION['timeout']);
+    unset($_SESSION['username']);
+    header("Refresh:0; url=index.php");
+}
 ?>
 
 <!DOCTYPE html>
@@ -13,54 +21,88 @@ session_start();
 </head>
 
 <body>
+    <?php
+    if (isset($_POST['login']) and !empty($_POST['username']) and !empty($_POST['password'])) {
+        if ($_POST['username'] === 'useris' and $_POST['password'] === 'passwordas') {
+            $_SESSION['logged_in'] = true;
+            $_SESSION['timeout'] = time();
+            $_SESSION['username'] = $_POST['username'];
+            header("Refresh:0");
+            $msg = 'Correct';
+        } else {
+            $msg = 'Wrong user name or password';
+        }
+    }
 
-    <h1 class="title">File explorer</h1>
+    if (!$_SESSION['logged_in']) {
+    ?>
+        <h2 class="title title--login">Login</h2>
+        <h4><?php echo $msg ?></h4>
+        <form class="login-form" method="post">
+            <div class="login-form__field">
+                <label for="username" class="login-form__field-label">Username</label>
+                <input type="text" name="username" id="username" class="login-form__field-input" placeholder="name: useris" required autofocus>
+            </div>
+            <div class="login-form__field">
+                <label for="password" class="login-form__field-label">Password</label>
+                <input type="password" name="password" id="password" class="login-form__field-input" placeholder="pass: passwordas" required>
+            </div>
+            <input type="submit" value="Login" name="login" class="login-form__btn">
+        </form>
 
     <?php
+    } elseif ($_SESSION['logged_in']) {
+    ?>
+        <a class="logout" href="index.php?action=logout">Logout</a>
+        <h1 class="title">File explorer</h1>
+        <?php
 
-    if (!isset($_GET['dir'])) {
-        $curr_dir = '..';
-    } else {
-        $curr_dir = $_GET['dir'];
-    }
-
-    if (isset($_POST['newFolder']) and $_POST['newFolder'] != '') {
-        if (!file_exists($curr_dir . '/' . $_POST['newFolder'])) {
-            mkdir($curr_dir . '/' . $_POST['newFolder']);
-            array_push(scandir($curr_dir), $_POST['newFolder']);
+        if (!isset($_GET['dir'])) {
+            $curr_dir = '..';
         } else {
-            print('<span class="error">Folder name exists</span>');
+            $curr_dir = $_GET['dir'];
         }
-    } elseif ($_POST['newFolder'] === '') {
-        print('<span class="error">Folder name cannot be empty</span>');
-    }
 
-    //DELETE button
-    if ($_GET['action'] && $_GET['action'] == 'delete') {
-        unlink($_GET['filename']);
-        //TODO:: fix this sh...
-        header("Location:index.php");
-        exit();
+        if (isset($_POST['newFolder']) and $_POST['newFolder'] != '') {
+            if (!file_exists($curr_dir . '/' . $_POST['newFolder'])) {
+                mkdir($curr_dir . '/' . $_POST['newFolder']);
+                array_push(scandir($curr_dir), $_POST['newFolder']);
+            } else {
+                print('<span class="error">Folder name exists</span>');
+            }
+        } elseif ($_POST['newFolder'] === '') {
+            print('<span class="error">Folder name cannot be empty</span>');
+        }
+
+        //DELETE button
+        if ($_GET['action'] && $_GET['action'] == 'delete') {
+            unlink($_GET['filename']);
+            //TODO:: fix this sh...
+            header("Location:index.php");
+            exit();
+        }
+        ?>
+
+        <div class="container">
+            <form action="" method="post" class="form">
+                <input type="text" name="newFolder" id="newFolder" class="form__input" placeholder="Folder name">
+                <input type="submit" value="Create" class="form__button">
+            </form>
+            <div class="table">
+                <?php
+                //BACK button logic
+                if (isset($_GET['dir']) and $_GET['dir'] != '..') {
+                    $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
+                    print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
+                }
+
+                createTable($curr_dir);
+                ?>
+            </div>
+        </div>
+    <?php
     }
     ?>
-
-    <div class="container">
-        <form action="" method="post" class="form">
-            <input type="text" name="newFolder" id="newFolder" class="form__input" placeholder="Folder name">
-            <input type="submit" value="Create" class="form__button">
-        </form>
-        <div class="table">
-            <?php
-            //BACK button logic
-            if (isset($_GET['dir']) and $_GET['dir'] != '..') {
-                $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
-                print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
-            }
-
-            createTable($curr_dir);
-            ?>
-        </div>
-    </div>
 
     <?php
     function createTable($path)
