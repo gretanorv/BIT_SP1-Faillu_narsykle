@@ -37,7 +37,6 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
     if (!$_SESSION['logged_in']) {
     ?>
         <h2 class="title title--login">Login</h2>
-        <h4><?php echo $msg ?></h4>
         <form class="login-form" method="post">
             <div class="login-form__field">
                 <label for="username" class="login-form__field-label">Username</label>
@@ -49,6 +48,7 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
             </div>
             <input type="submit" value="Login" name="login" class="login-form__btn">
         </form>
+        <h4 class="error-login"><?php echo $msg ?></h4>
 
     <?php
     } elseif ($_SESSION['logged_in']) {

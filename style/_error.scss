@@ -3,4 +3,11 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+
+  &-login {
+    text-align: center;
+    color: #fd9090;
+    font-weight: 400;
+    font-size: 16px;
+  }
 }

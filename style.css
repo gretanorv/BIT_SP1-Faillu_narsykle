@@ -86,6 +86,13 @@
           transform: translateX(-50%);
 }
 
+.error-login {
+  text-align: center;
+  color: #fd9090;
+  font-weight: 400;
+  font-size: 16px;
+}
+
 .form {
   display: -webkit-box;
   display: -ms-flexbox;
