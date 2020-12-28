@@ -17,7 +17,6 @@ session_start();
     <h1 class="title">File explorer</h1>
 
     <?php
-    print(substr_compare('file.php', '.php', -4));
 
     if (!isset($_GET['dir'])) {
         $curr_dir = '..';
@@ -30,17 +29,16 @@ session_start();
             mkdir($curr_dir . '/' . $_POST['newFolder']);
             array_push(scandir($curr_dir), $_POST['newFolder']);
         } else {
-            //TODO:: place message nicely
-            print('Folder name exists');
+            print('<span class="error">Folder name exists</span>');
         }
     } elseif ($_POST['newFolder'] === '') {
-        //TODO:: place message nicely
-        print('Folder name is empty');
+        print('<span class="error">Folder name cannot be empty</span>');
     }
 
     //DELETE button
     if ($_GET['action'] && $_GET['action'] == 'delete') {
         unlink($_GET['filename']);
+        //TODO:: fix this sh...
         header("Location:index.php");
         exit();
     }
