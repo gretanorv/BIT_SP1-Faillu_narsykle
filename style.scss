@@ -11,6 +11,13 @@ body {
   letter-spacing: 13px;
 }
 
+.error {
+  color: red;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .container {
   background-color: #303030;
   border-radius: 3px;
