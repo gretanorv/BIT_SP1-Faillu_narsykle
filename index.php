@@ -17,6 +17,8 @@ session_start();
     <h1 class="title">File explorer</h1>
 
     <?php
+    print(substr_compare('file.php', '.php', -4));
+
     if (!isset($_GET['dir'])) {
         $curr_dir = '..';
     } else {
@@ -77,12 +79,15 @@ session_start();
                                 {$dir[$i]}
                             </a></div>");
             } elseif (is_file("{$path}/{$dir[$i]}")) {
-                //TODO:: if ending .php no DELETE button
                 print("<div class='table__row-left'>File</div>");
-                print("<div class='table__row-right'>{$dir[$i]}
+                print("<div class='table__row-right'>{$dir[$i]}");
+                if (substr_compare($dir[$i], '.php', -4)) {
+                    print("
                         <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
                             DELETE
-                        </a></div>");
+                        </a>");
+                }
+                print("</div>");
             }
             print('</div>');
         }
