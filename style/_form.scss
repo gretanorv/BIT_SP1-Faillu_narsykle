@@ -1,0 +1,23 @@
+.form {
+  display: flex;
+  right: 8px;
+  top: 7px;
+  position: absolute;
+
+  &__input {
+    padding: 3px 10px;
+    border: none;
+    width: 130px;
+  }
+
+  &__button {
+    background-color: #9dadffc0;
+    border: none;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: #2b2b2b;
+    cursor: pointer;
+    padding: 3px 10px;
+    text-transform: uppercase;
+  }
+}
