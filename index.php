@@ -37,7 +37,6 @@ if (isset($_FILES['fileToUpload'])) {
 
 // file download logic
 if (isset($_POST['download'])) {
-    // $file = './' . $_GET["path"] . $_POST['download'];
     $file = './' . $_GET["path"];
     $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, null, 'utf-8'));
     ob_clean();
@@ -73,7 +72,7 @@ if (isset($_POST['download'])) {
             $_SESSION['logged_in'] = true;
             $_SESSION['timeout'] = time();
             $_SESSION['username'] = $_POST['username'];
-            header("Refresh:0");
+            header("Refresh:0; url=index.php");
             $msg = 'Correct';
         } else {
             $msg = 'Wrong user name or password';
@@ -98,6 +97,16 @@ if (isset($_POST['download'])) {
 
     <?php
     } elseif ($_SESSION['logged_in']) {
+        //logout after being inactive for 15 min
+        if (time() - $_SESSION['timeout'] > 900) { //subtract new timestamp from the old one
+            echo "<script>alert('Your session has expired. Please log in again.');</script>";
+            unset($_SESSION['username'], $_SESSION['password'], $_SESSION['timeout']);
+            $_SESSION['logged_in'] = false;
+            header("Refresh:0");
+            exit;
+        } else {
+            $_SESSION['timeout'] = time(); //set new timestamp
+        }
     ?>
         <a class="logout" href="?action=logout">Logout</a>
         <h1 class="title">File explorer</h1>
@@ -186,9 +195,6 @@ if (isset($_POST['download'])) {
                 print("<div class='table__row-left'>File</div>");
                 print("<div class='table__row-right'><span class='table__row-right-content'>{$dir[$i]}</span>");
                 //DOWNLOAD button
-
-
-                //TODO:: fix download link to first file in the folder
                 print('<form action="?path=' . "{$path}/{$dir[$i]}" . '" method="POST" class="table__row-form">');
                 print('<label for="' . $dir[$i] . '" class="table__row-btn table__row-btn--download">DOWNLOAD</label>');
                 print('<input type="submit" id="' . $dir[$i] . '" name="download" value="' . $dir[$i] . '" class="table__row-btn--hidden"/>');
