@@ -102,6 +102,10 @@
   position: absolute;
 }
 
+.form--upload {
+  text-align: center;
+}
+
 .form__input {
   padding: 3px 10px;
   border: none;
@@ -117,6 +121,10 @@
   cursor: pointer;
   padding: 3px 10px;
   text-transform: uppercase;
+}
+
+.form__button--upload {
+  margin-top: 10px;
 }
 
 .table {
@@ -219,6 +227,15 @@ body {
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   padding: 35px 5px 5px;
-  margin-top: 50px;
+  margin-top: 10px;
+}
+
+.success {
+  text-align: center;
+  color: #c0ffd3;
+  font-weight: 400;
+  font-size: 16px;
+  margin: 0;
+  margin-top: -10px;
 }
 /*# sourceMappingURL=style.css.map */

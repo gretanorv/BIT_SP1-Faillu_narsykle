@@ -4,6 +4,10 @@
   top: 7px;
   position: absolute;
 
+  &--upload {
+    text-align: center;
+  }
+
   &__input {
     padding: 3px 10px;
     border: none;
@@ -19,5 +23,9 @@
     cursor: pointer;
     padding: 3px 10px;
     text-transform: uppercase;
+
+    &--upload {
+      margin-top: 10px;
+    }
   }
 }

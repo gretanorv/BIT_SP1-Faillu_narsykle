@@ -8,6 +8,32 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
     unset($_SESSION['username']);
     header("Refresh:0; url=index.php");
 }
+
+//file upload logic
+if (isset($_FILES['fileToUpload'])) {
+    $errors = array();
+    $file_name = $_FILES['fileToUpload']['name'];
+    $file_size = $_FILES['fileToUpload']['size'];
+    $file_tmp = $_FILES['fileToUpload']['tmp_name'];
+    $file_type = $_FILES['fileToUpload']['type'];
+
+    $file_ext = strtolower(end(explode('.', $_FILES['fileToUpload']['name'])));
+    $extensions = array("jpeg", "jpg", "png");
+    if (in_array($file_ext, $extensions) === false) {
+        $errors[] = "Extension not allowed, please choose a JPEG or PNG file.";
+    }
+    if ($file_size > 2097152) {
+        $errors[] = 'File size must be exately 2 MB';
+    }
+    //TODO:: catch Warning: POST Content-Length of 14917283 bytes exceeds the limit of 8388608 bytes in Unknown on line 0
+    $upload_path = end(explode('=', $_SERVER['REQUEST_URI']));
+    if (empty($errors) == true) {
+        move_uploaded_file($file_tmp, $upload_path . '/' . $file_name);
+        $success_msg = "File was uploaded successfully";
+    } else {
+        $err_msg = $errors;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -101,11 +127,28 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
                 ?>
             </div>
         </div>
-    <?php
-    }
-    ?>
+
+        <h4 class="error-login">
+            <?php
+            if ($err_msg) {
+                foreach ($err_msg as $key => $value) {
+                    echo $value;
+                }
+            }
+            ?>
+        </h4>
+        <h4 class="success"><?php echo $success_msg; ?></h4>
+        <form action="" method="post" enctype="multipart/form-data" class="form--upload">
+            <input type="file" name="fileToUpload" id="img" style="display:none;" />
+            <button type="button" class="form__button form__button--upload">
+                <label for="img">Choose file</label>
+            </button>
+            <button type="submit" class="form__button form__button--upload">Upload file</button>
+        </form>
 
     <?php
+    }
+
     function createTable($path)
     {
         $dir = scandir($path);
