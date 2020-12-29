@@ -186,27 +186,6 @@
   position: relative;
 }
 
-.table__row-right-btn {
-  position: absolute;
-  color: #ccc;
-  cursor: pointer;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background-color: transparent;
-  border: none;
-  border-left: 1px solid black;
-  -webkit-transition: background-color 0.3s ease;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-  padding: 0 15px;
-  padding-top: 6px;
-}
-
-.table__row-right-btn:hover {
-  background-color: #c57e7e;
-}
-
 .table__row-form {
   margin-left: auto;
 }
@@ -219,7 +198,7 @@
   text-decoration: none;
   -webkit-transition: background-color 0.3s ease;
   transition: background-color 0.3s ease;
-  right: 0;
+  right: 103px;
   top: 0;
   bottom: 0;
   position: absolute;
@@ -232,7 +211,11 @@
 }
 
 .table__row-btn--download {
-  right: 72px;
+  right: 0;
+}
+
+.table__row-btn--download:hover {
+  background-color: #659574;
 }
 
 .table__row-btn--hidden {

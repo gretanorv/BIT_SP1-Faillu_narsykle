@@ -23,7 +23,7 @@ if (isset($_FILES['fileToUpload'])) {
         $errors[] = "Extension not allowed, please choose a JPEG or PNG file.";
     }
     if ($file_size > 2097152) {
-        $errors[] = 'File size must be exately 2 MB';
+        $errors[] = 'File size cannot exceed 2 MB';
     }
     //TODO:: catch Warning: POST Content-Length of 14917283 bytes exceeds the limit of 8388608 bytes in Unknown on line 0
     $upload_path = end(explode('=', $_SERVER['REQUEST_URI']));
@@ -37,22 +37,19 @@ if (isset($_FILES['fileToUpload'])) {
 
 // file download logic
 if (isset($_POST['download'])) {
-    // print('Path to download: ' . './' . $_GET["path"] . $_POST['download']);
-    // $file = './' .  $_POST['download'];
-    $file = './' . $_GET["path"] . $_POST['download'];
-    // a&nbsp;b.txt
-    // a b.txt
+    // $file = './' . $_GET["path"] . $_POST['download'];
+    $file = './' . $_GET["path"];
     $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, null, 'utf-8'));
     ob_clean();
     ob_start();
     header('Content-Description: File Transfer');
-    header('Content-Type: application/pdf'); // mime type → ši forma turėtų veikti daugumai failų, su šiuo mime type. Jei neveiktų reiktų daryti sudėtingesnę logiką
+    header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename=' . basename($file));
     header('Content-Transfer-Encoding: binary');
     header('Expires: 0');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
-    header('Content-Length: ' . filesize($file)); // kiek baitų browseriui laukti, jei 0 - failas neveiks nors bus sukurtas
+    header('Content-Length: ' . filesize($file));
     ob_end_flush();
     readfile($file);
     exit;
@@ -102,14 +99,14 @@ if (isset($_POST['download'])) {
     <?php
     } elseif ($_SESSION['logged_in']) {
     ?>
-        <a class="logout" href="index.php?action=logout">Logout</a>
+        <a class="logout" href="?action=logout">Logout</a>
         <h1 class="title">File explorer</h1>
         <?php
 
-        if (!isset($_GET['dir'])) {
+        if (!isset($_GET['path'])) {
             $curr_dir = '..';
         } else {
-            $curr_dir = $_GET['dir'];
+            $curr_dir = $_GET['path'];
         }
 
         if (isset($_POST['newFolder']) and $_POST['newFolder'] != '') {
@@ -126,7 +123,7 @@ if (isset($_POST['download'])) {
         //DELETE button
         if ($_GET['action'] && $_GET['action'] == 'delete') {
             $file_location = preg_replace('#\/[^/]*$#', '$1', $_GET['filename']) . "\n";;
-            $redirect_to = "http://localhost/failu-narsykle/index.php?dir={$file_location}";
+            $redirect_to = "http://localhost/failu-narsykle/?path={$file_location}";
             unlink($_GET['filename']);
             header("Location: {$redirect_to}");
             exit();
@@ -141,7 +138,7 @@ if (isset($_POST['download'])) {
             <div class="table">
                 <?php
                 //BACK button logic
-                if (isset($_GET['dir']) and $_GET['dir'] != '..') {
+                if (isset($_GET['path']) and $_GET['path'] != '..') {
                     $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
                     print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
                 }
@@ -182,19 +179,23 @@ if (isset($_POST['download'])) {
             if (is_dir("{$path}/{$dir[$i]}")) {
                 print('<div class="table__row-left">Directory</div>');
                 print("<div class='table__row-right'>
-                            <a class='table__row-link' href='index.php?dir={$path}/{$dir[$i]}'>
+                            <a class='table__row-link' href='?path={$path}/{$dir[$i]}'>
                                 {$dir[$i]}
                             </a></div>");
             } elseif (is_file("{$path}/{$dir[$i]}")) {
                 print("<div class='table__row-left'>File</div>");
                 print("<div class='table__row-right'><span class='table__row-right-content'>{$dir[$i]}</span>");
+                //DOWNLOAD button
+
+
+                //TODO:: fix download link to first file in the folder
                 print('<form action="?path=' . "{$path}/{$dir[$i]}" . '" method="POST" class="table__row-form">');
-                print('<label for="download" class="table__row-btn table__row-btn--download">DOWNLOAD</label>');
-                print('<input type="submit" id="download" name="download" value="" class="table__row-btn--hidden"/>');
+                print('<label for="' . $dir[$i] . '" class="table__row-btn table__row-btn--download">DOWNLOAD</label>');
+                print('<input type="submit" id="' . $dir[$i] . '" name="download" value="' . $dir[$i] . '" class="table__row-btn--hidden"/>');
                 print('</form>');
                 if (substr_compare($dir[$i], '.php', -4)) {
                     print("
-                        <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-btn'>
+                        <a href='?action=delete&filename={$path}/{$dir[$i]}' class='table__row-btn'>
                             DELETE
                         </a>");
                 }
