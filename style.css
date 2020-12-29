@@ -172,8 +172,10 @@
 
 .table__row-right {
   -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
       align-self: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   padding: 5px;
   color: #ccc;
   -webkit-box-flex: 5;
@@ -203,6 +205,38 @@
 
 .table__row-right-btn:hover {
   background-color: #c57e7e;
+}
+
+.table__row-form {
+  margin-left: auto;
+}
+
+.table__row-btn {
+  color: #ccc;
+  cursor: pointer;
+  background-color: transparent;
+  border-left: 1px solid black;
+  text-decoration: none;
+  -webkit-transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  padding: 0 10px;
+  padding-top: 6px;
+}
+
+.table__row-btn:hover {
+  background-color: #c57e7e;
+}
+
+.table__row-btn--download {
+  right: 72px;
+}
+
+.table__row-btn--hidden {
+  display: none;
 }
 
 .table__row-link {

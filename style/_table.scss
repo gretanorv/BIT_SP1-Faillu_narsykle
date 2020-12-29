@@ -35,6 +35,7 @@
 
     &-right {
       align-self: center;
+      display: flex;
       padding: 5px;
       color: #ccc;
       flex: 5;
@@ -60,6 +61,37 @@
         &:hover {
           background-color: #c57e7e;
         }
+      }
+    }
+
+    &-form {
+      margin-left: auto;
+    }
+
+    &-btn {
+      color: #ccc;
+      cursor: pointer;
+      background-color: transparent;
+      border-left: 1px solid black;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      padding: 0 10px;
+      padding-top: 6px;
+
+      &:hover {
+        background-color: #c57e7e;
+      }
+
+      &--download {
+        right: 72px;
+      }
+
+      &--hidden {
+        display: none;
       }
     }
 

@@ -34,6 +34,29 @@ if (isset($_FILES['fileToUpload'])) {
         $err_msg = $errors;
     }
 }
+
+// file download logic
+if (isset($_POST['download'])) {
+    // print('Path to download: ' . './' . $_GET["path"] . $_POST['download']);
+    // $file = './' .  $_POST['download'];
+    $file = './' . $_GET["path"] . $_POST['download'];
+    // a&nbsp;b.txt
+    // a b.txt
+    $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, null, 'utf-8'));
+    ob_clean();
+    ob_start();
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/pdf'); // mime type → ši forma turėtų veikti daugumai failų, su šiuo mime type. Jei neveiktų reiktų daryti sudėtingesnę logiką
+    header('Content-Disposition: attachment; filename=' . basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file)); // kiek baitų browseriui laukti, jei 0 - failas neveiks nors bus sukurtas
+    ob_end_flush();
+    readfile($file);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -164,10 +187,14 @@ if (isset($_FILES['fileToUpload'])) {
                             </a></div>");
             } elseif (is_file("{$path}/{$dir[$i]}")) {
                 print("<div class='table__row-left'>File</div>");
-                print("<div class='table__row-right'>{$dir[$i]}");
+                print("<div class='table__row-right'><span class='table__row-right-content'>{$dir[$i]}</span>");
+                print('<form action="?path=' . "{$path}/{$dir[$i]}" . '" method="POST" class="table__row-form">');
+                print('<label for="download" class="table__row-btn table__row-btn--download">DOWNLOAD</label>');
+                print('<input type="submit" id="download" name="download" value="" class="table__row-btn--hidden"/>');
+                print('</form>');
                 if (substr_compare($dir[$i], '.php', -4)) {
                     print("
-                        <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
+                        <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-btn'>
                             DELETE
                         </a>");
                 }
@@ -177,7 +204,6 @@ if (isset($_FILES['fileToUpload'])) {
         }
     }
     ?>
-
     <script> </script>
 </body>
 
