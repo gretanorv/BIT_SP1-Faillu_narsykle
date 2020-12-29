@@ -1,11 +1,16 @@
 .form {
   display: flex;
   right: 8px;
-  top: 7px;
+  top: 9px;
   position: absolute;
+
+  &--upload {
+    text-align: center;
+  }
 
   &__input {
     padding: 3px 10px;
+    height: 13px;
     border: none;
     width: 130px;
   }
@@ -17,7 +22,12 @@
     border-bottom-right-radius: 3px;
     color: #2b2b2b;
     cursor: pointer;
+    height: 19px;
     padding: 3px 10px;
     text-transform: uppercase;
+
+    &--upload {
+      margin-top: 10px;
+    }
   }
 }

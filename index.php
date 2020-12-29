@@ -8,6 +8,51 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
     unset($_SESSION['username']);
     header("Refresh:0; url=index.php");
 }
+
+//file upload logic
+if (isset($_FILES['fileToUpload'])) {
+    $errors = array();
+    $file_name = $_FILES['fileToUpload']['name'];
+    $file_size = $_FILES['fileToUpload']['size'];
+    $file_tmp = $_FILES['fileToUpload']['tmp_name'];
+    $file_type = $_FILES['fileToUpload']['type'];
+
+    $file_ext = strtolower(end(explode('.', $_FILES['fileToUpload']['name'])));
+    $extensions = array("jpeg", "jpg", "png");
+    if (in_array($file_ext, $extensions) === false) {
+        $errors[] = "Extension not allowed, please choose a JPEG or PNG file.";
+    }
+    if ($file_size > 2097152) {
+        $errors[] = 'File size cannot exceed 2 MB';
+    }
+    //TODO:: catch Warning: POST Content-Length of 14917283 bytes exceeds the limit of 8388608 bytes in Unknown on line 0
+    $upload_path = end(explode('=', $_SERVER['REQUEST_URI']));
+    if (empty($errors) == true) {
+        move_uploaded_file($file_tmp, $upload_path . '/' . $file_name);
+        $success_msg = "File was uploaded successfully";
+    } else {
+        $err_msg = $errors;
+    }
+}
+
+// file download logic
+if (isset($_POST['download'])) {
+    $file = './' . $_GET["path"];
+    $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($file, null, 'utf-8'));
+    ob_clean();
+    ob_start();
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename=' . basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file));
+    ob_end_flush();
+    readfile($file);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +72,7 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
             $_SESSION['logged_in'] = true;
             $_SESSION['timeout'] = time();
             $_SESSION['username'] = $_POST['username'];
-            header("Refresh:0");
+            header("Refresh:0; url=index.php");
             $msg = 'Correct';
         } else {
             $msg = 'Wrong user name or password';
@@ -52,15 +97,25 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
 
     <?php
     } elseif ($_SESSION['logged_in']) {
+        //logout after being inactive for 15 min
+        if (time() - $_SESSION['timeout'] > 900) { //subtract new timestamp from the old one
+            echo "<script>alert('Your session has expired. Please log in again.');</script>";
+            unset($_SESSION['username'], $_SESSION['password'], $_SESSION['timeout']);
+            $_SESSION['logged_in'] = false;
+            header("Refresh:0");
+            exit;
+        } else {
+            $_SESSION['timeout'] = time(); //set new timestamp
+        }
     ?>
-        <a class="logout" href="index.php?action=logout">Logout</a>
+        <a class="logout" href="?action=logout">Logout</a>
         <h1 class="title">File explorer</h1>
         <?php
 
-        if (!isset($_GET['dir'])) {
+        if (!isset($_GET['path'])) {
             $curr_dir = '..';
         } else {
-            $curr_dir = $_GET['dir'];
+            $curr_dir = $_GET['path'];
         }
 
         if (isset($_POST['newFolder']) and $_POST['newFolder'] != '') {
@@ -77,7 +132,7 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
         //DELETE button
         if ($_GET['action'] && $_GET['action'] == 'delete') {
             $file_location = preg_replace('#\/[^/]*$#', '$1', $_GET['filename']) . "\n";;
-            $redirect_to = "http://localhost/failu-narsykle/index.php?dir={$file_location}";
+            $redirect_to = "http://localhost/failu-narsykle/?path={$file_location}";
             unlink($_GET['filename']);
             header("Location: {$redirect_to}");
             exit();
@@ -92,7 +147,7 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
             <div class="table">
                 <?php
                 //BACK button logic
-                if (isset($_GET['dir']) and $_GET['dir'] != '..') {
+                if (isset($_GET['path']) and $_GET['path'] != '..') {
                     $_SERVER['REQUEST_URI'] = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
                     print('<a class="table__nav" href=' . $_SERVER['REQUEST_URI'] . '>Back</a>');
                 }
@@ -101,11 +156,28 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
                 ?>
             </div>
         </div>
-    <?php
-    }
-    ?>
+
+        <h4 class="error-login">
+            <?php
+            if ($err_msg) {
+                foreach ($err_msg as $key => $value) {
+                    echo $value;
+                }
+            }
+            ?>
+        </h4>
+        <h4 class="success"><?php echo $success_msg; ?></h4>
+        <form action="" method="post" enctype="multipart/form-data" class="form--upload">
+            <input type="file" name="fileToUpload" id="img" style="display:none;" />
+            <button type="button" class="form__button form__button--upload">
+                <label for="img">Choose file</label>
+            </button>
+            <button type="submit" class="form__button form__button--upload">Upload file</button>
+        </form>
 
     <?php
+    }
+
     function createTable($path)
     {
         $dir = scandir($path);
@@ -116,15 +188,20 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
             if (is_dir("{$path}/{$dir[$i]}")) {
                 print('<div class="table__row-left">Directory</div>');
                 print("<div class='table__row-right'>
-                            <a class='table__row-link' href='index.php?dir={$path}/{$dir[$i]}'>
+                            <a class='table__row-link' href='?path={$path}/{$dir[$i]}'>
                                 {$dir[$i]}
                             </a></div>");
             } elseif (is_file("{$path}/{$dir[$i]}")) {
                 print("<div class='table__row-left'>File</div>");
-                print("<div class='table__row-right'>{$dir[$i]}");
+                print("<div class='table__row-right'><span class='table__row-right-content'>{$dir[$i]}</span>");
+                //DOWNLOAD button
+                print('<form action="?path=' . "{$path}/{$dir[$i]}" . '" method="POST" class="table__row-form">');
+                print('<label for="' . $dir[$i] . '" class="table__row-btn table__row-btn--download">DOWNLOAD</label>');
+                print('<input type="submit" id="' . $dir[$i] . '" name="download" value="' . $dir[$i] . '" class="table__row-btn--hidden"/>');
+                print('</form>');
                 if (substr_compare($dir[$i], '.php', -4)) {
                     print("
-                        <a href='index.php?action=delete&filename={$path}/{$dir[$i]}' class='table__row-right-btn'>
+                        <a href='?action=delete&filename={$path}/{$dir[$i]}' class='table__row-btn'>
                             DELETE
                         </a>");
                 }
@@ -134,7 +211,6 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
         }
     }
     ?>
-
     <script> </script>
 </body>
 
