@@ -76,9 +76,10 @@ if (isset($_GET['action']) and $_GET['action'] === 'logout') {
 
         //DELETE button
         if ($_GET['action'] && $_GET['action'] == 'delete') {
+            $file_location = preg_replace('#\/[^/]*$#', '$1', $_GET['filename']) . "\n";;
+            $redirect_to = "http://localhost/failu-narsykle/index.php?dir={$file_location}";
             unlink($_GET['filename']);
-            //TODO:: fix this sh...
-            header("Location:index.php");
+            header("Location: {$redirect_to}");
             exit();
         }
         ?>
