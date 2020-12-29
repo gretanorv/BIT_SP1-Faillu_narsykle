@@ -25,7 +25,6 @@ if (isset($_FILES['fileToUpload'])) {
     if ($file_size > 2097152) {
         $errors[] = 'File size cannot exceed 2 MB';
     }
-    //TODO:: catch Warning: POST Content-Length of 14917283 bytes exceeds the limit of 8388608 bytes in Unknown on line 0
     $upload_path = end(explode('=', $_SERVER['REQUEST_URI']));
     if (empty($errors) == true) {
         move_uploaded_file($file_tmp, $upload_path . '/' . $file_name);
@@ -98,14 +97,14 @@ if (isset($_POST['download'])) {
     <?php
     } elseif ($_SESSION['logged_in']) {
         //logout after being inactive for 15 min
-        if (time() - $_SESSION['timeout'] > 900) { //subtract new timestamp from the old one
+        if (time() - $_SESSION['timeout'] > 900) {
             echo "<script>alert('Your session has expired. Please log in again.');</script>";
             unset($_SESSION['username'], $_SESSION['password'], $_SESSION['timeout']);
             $_SESSION['logged_in'] = false;
             header("Refresh:0");
             exit;
         } else {
-            $_SESSION['timeout'] = time(); //set new timestamp
+            $_SESSION['timeout'] = time();
         }
     ?>
         <a class="logout" href="?action=logout">Logout</a>
