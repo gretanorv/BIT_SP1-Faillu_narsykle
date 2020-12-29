@@ -156,7 +156,7 @@ if (isset($_POST['download'])) {
             </div>
         </div>
 
-        <h4 class="error-login">
+        <h4 class="failed">
             <?php
             if ($err_msg) {
                 foreach ($err_msg as $key => $value) {
