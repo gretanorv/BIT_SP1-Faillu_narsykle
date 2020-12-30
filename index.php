@@ -25,7 +25,7 @@ if (isset($_FILES['fileToUpload'])) {
     if ($file_size > 2097152) {
         $errors[] = 'File size cannot exceed 2 MB';
     }
-    $upload_path = end(explode('=', $_SERVER['REQUEST_URI']));
+    $upload_path = str_replace("%20", " ", end(explode('=', $_SERVER['REQUEST_URI'])));;
     if (empty($errors) == true) {
         move_uploaded_file($file_tmp, $upload_path . '/' . $file_name);
         $success_msg = "File was uploaded successfully";
