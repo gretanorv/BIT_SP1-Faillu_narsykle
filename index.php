@@ -130,8 +130,11 @@ if (isset($_POST['download'])) {
 
         //DELETE button
         if ($_GET['action'] && $_GET['action'] == 'delete') {
-            $file_location = preg_replace('#\/[^/]*$#', '$1', $_GET['filename']) . "\n";;
-            $redirect_to = "http://localhost/failu-narsykle/?path={$file_location}";
+            print($_SERVER['REQUEST_URI']);
+            echo '<br>';
+            $redirect_to = preg_replace('#\/[^/]*$#', '$1', $_SERVER['REQUEST_URI']) . "\n";;
+            $redirect_to = str_replace("action=delete&filename", "path", $redirect_to);
+            echo '<br>';
             unlink($_GET['filename']);
             header("Location: {$redirect_to}");
             exit();
